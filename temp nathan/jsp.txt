@@ -1,0 +1,4 @@
+traitement d1 : 
+ faire avec du shell et awk (comment ? je sais pas)
+ faire avec un executable c qui lit l'entrée standard tant qu'elle n'est pas vide (peut-être plus réaliste)
+
