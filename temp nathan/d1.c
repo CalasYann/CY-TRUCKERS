@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAXLEN 30
 
@@ -63,6 +64,18 @@ int minf(int a, int b, int c){
         temp = c;
     }
     return temp;
+}
+
+void traiter(AVL * a){
+    printf("%d\n", a->id);
+}
+
+void parcoursPrefixe(AVL * a){
+    if (a != NULL){
+        traiter(a);
+        parcoursPrefixe(a->fg);
+        parcoursPrefixe(a->fd);
+    }
 }
 
 int recherche(AVL * Arbre, int id){ //renvoie 1 si un arbre avec l'id passé en argument existe dans l'arbre passé en argument, 0 sinon
@@ -158,11 +171,13 @@ AVL * rotationDroite(AVL * a){ // rotation simple à droite dans un AVL
 }
 
 AVL * doubleRotationGauche(AVL * a){
-
+    a->fd = rotationDroite(a->fd);
+    return rotationGauche(a);
 }
 
 AVL * doubleRotationDroite(AVL * a){
-
+    a->fg = rotationGauche(a->fg);
+    return rotationDroite(a);
 }
 
 AVL * equilibrageAVL(AVL * a){
@@ -204,6 +219,7 @@ AVL * insertionAVL(AVL * a, unsigned int id, int * h){
 
     if ( *h != 0){
         a->equilibre = a->equilibre + *h;
+        a = equilibrageAVL(a);
         if (a->equilibre == 0){
             *h = 0;
         }
@@ -267,13 +283,16 @@ int id_from_char(char * s){
 
 int main(){
 
-    while (scanf("%d;%s", id_trajet, nom ) == 2){
-        
+    char buffer[100];
+    char * data;
+
+    while (fgets(buffer, sizeof(buffer), stdin) != NULL){
+        data = strtok(buffer,";");
+        while (data != NULL){
+            printf("%s\n", data);
+            data = strtok(NULL,";");
+        }
     }
 
-    char bonjour[] = "Hello World!";
-
-    printf("%u\n", id_from_char(bonjour));
-    printf("%d\n", id_from_char("Hfllo World!"));
-    printf("%d", (id_from_char(bonjour) == id_from_char("Hfllo World!")));
+    
 }
