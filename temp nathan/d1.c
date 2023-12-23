@@ -6,7 +6,7 @@
 
 typedef struct AVL{
     unsigned int id;
-    //char * nom;      (je sais pas si on met le nom du conducteur dans l'AVL)
+    char nom[MAXLEN];      //(je sais pas si on met le nom du conducteur dans l'AVL)
     int nbr_trajets;
     int equilibre;
     struct AVL * fg;
@@ -16,13 +16,20 @@ typedef struct AVL{
 char * nom;
 int id_trajet;
 
-AVL * creerAVL(int idn){
+AVL * creerAVL(int idn, char * str){
     AVL * a = malloc(sizeof(AVL));
+    int i = 0;
+
     a->id = idn;
     a->equilibre = 0;
     a->nbr_trajets = 1;
     a->fg = NULL;
     a->fd = NULL;
+    
+    while (i<MAXLEN && *(str+i) != '\0'){
+        a->nom[i] = *(str+i);
+        i++;
+    }
 
     return a;
 }
@@ -200,17 +207,17 @@ AVL * equilibrageAVL(AVL * a){
     return a;
 }
 
-AVL * insertionAVL(AVL * a, unsigned int id, int * h){
+AVL * insertionAVL(AVL * a, unsigned int id, int * h, char * nom){
     if (a==NULL){
         *h = 1;
-        return creerAVL(id);
+        return creerAVL(id, nom);
     }
     else if (id < a->id){
         *h= -*h;
-        a->fg = insertionAVL(a->fg, id, h);
+        a->fg = insertionAVL(a->fg, id, h, nom);
     }
     else if (id > a->id){
-        a->fd = insertionAVL(a->fd, id, h);
+        a->fd = insertionAVL(a->fd, id, h, nom);
     }
     else{
         *h=0;
@@ -286,12 +293,27 @@ int main(){
     char buffer[100];
     char * data;
 
+    int id_trajet;
+    char * nom;
+    AVL * a;
+    //int * h;
+    //*h = 0;
+
     while (fgets(buffer, sizeof(buffer), stdin) != NULL){
         data = strtok(buffer,";");
-        while (data != NULL){
-            printf("%s\n", data);
-            data = strtok(NULL,";");
-        }
+        
+        id_trajet = atoi(data);
+        printf("%d;", id_trajet);
+            
+
+        data = strtok(NULL,";");
+        nom = data;
+        printf("%s\n", nom);
+
+        //a = insertionAVL(a, id_from_char(nom), h, nom);
+        
+
+        
     }
 
     
