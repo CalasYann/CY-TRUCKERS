@@ -9,12 +9,12 @@ typedef struct AVL{
     char nom[MAXLEN];      //(je sais pas si on met le nom du conducteur dans l'AVL)
     int nbr_trajets;
     int equilibre;
+    int trajets[50];
     struct AVL * fg;
     struct AVL * fd;
 }AVL;
 
-char * nom;
-int id_trajet;
+
 
 AVL * creerAVL(int idn, char * str){
     AVL * a = malloc(sizeof(AVL));
@@ -26,10 +26,12 @@ AVL * creerAVL(int idn, char * str){
     a->fg = NULL;
     a->fd = NULL;
     
-    while (i<MAXLEN && *(str+i) != '\0'){
+    /*while (i<MAXLEN && (*(str+i) != '\0' && *(str+i) != '\n')){
         a->nom[i] = *(str+i);
         i++;
-    }
+    }*/
+
+    strcpy(a->nom, str);
 
     return a;
 }
@@ -75,6 +77,7 @@ int minf(int a, int b, int c){
 
 void traiter(AVL * a){
     printf("%d\n", a->id);
+    printf("%s\n", a->nom);
 }
 
 void parcoursPrefixe(AVL * a){
@@ -207,19 +210,36 @@ AVL * equilibrageAVL(AVL * a){
     return a;
 }
 
-AVL * insertionAVL(AVL * a, unsigned int id, int * h, char * nom){
+int present(int * l, int a){
+    int i = 0;
+    while (*(l+i) != NULL){
+        if ( *(l+i) == a){
+            return 1;
+        }
+        i++;
+    }
+    return 0;
+}
+
+AVL * insertionAVL(AVL * a, unsigned int id, int * h, char * nom, int id_t){
+    //printf("%s", nom);
     if (a==NULL){
+        //printf("a = NULL\n");
         *h = 1;
+        //printf("ça a marché avec h chef\n");
         return creerAVL(id, nom);
     }
     else if (id < a->id){
         *h= -*h;
-        a->fg = insertionAVL(a->fg, id, h, nom);
+        a->fg = insertionAVL(a->fg, id, h, nom, id_t);
     }
     else if (id > a->id){
-        a->fd = insertionAVL(a->fd, id, h, nom);
+        a->fd = insertionAVL(a->fd, id, h, nom, id_t);
     }
     else{
+        if (present(a->trajets, id_t) == 0){
+            //rajoute l'id du nouveau trajet dans la liste des trajets
+        }
         *h=0;
         return a;
     }
@@ -274,6 +294,7 @@ AVL * suppressionAVL(AVL * a, unsigned int id, int * h){
         }
     }
     return a;
+
 }
 
 int id_from_char(char * s){
@@ -295,11 +316,15 @@ int main(){
 
     int id_trajet;
     char * nom;
-    AVL * a;
-    //int * h;
-    //*h = 0;
+    AVL * a = NULL;
+    int  h;
+    h = 0;
+    int j = 0;
 
-    while (fgets(buffer, sizeof(buffer), stdin) != NULL){
+    nom = malloc(sizeof(char)*MAXLEN);
+
+    /*while (fgets(buffer, sizeof(buffer), stdin) != NULL){
+        j = 0;
         data = strtok(buffer,";");
         
         id_trajet = atoi(data);
@@ -307,14 +332,44 @@ int main(){
             
 
         data = strtok(NULL,";");
-        nom = data;
+        
+        //nom = data;
+        while ((data[j] != '\0') && (data[j] != '\n')){
+            nom[j] = data[j];
+            j++;
+        }
         printf("%s\n", nom);
 
-        //a = insertionAVL(a, id_from_char(nom), h, nom);
-        
+        a = insertionAVL(a, id_from_char(nom), &h, nom);
 
         
+        //parcoursPrefixe(a);
+        
+    }*/
+
+    while (fgets(buffer, sizeof(buffer), stdin)){
+        j = 0;
+        data = strtok(buffer, ";\n");
+        
+        id_trajet = atoi(data);
+        printf("%d;", id_trajet);
+
+        data = strtok(NULL,";\n");
+        //printf("data : %s\n", data);
+        /*while( data[j] != '\0'){
+            printf("%c", data[j]);
+            j++;
+        }*/
+        printf("\n");
+        strcpy(nom, data);
+        //nom = data;
+        //printf("nom : %s\n", nom);
+
+        a = insertionAVL(a, id_from_char(nom), &h, nom, id_trajet);
     }
+
+    parcoursPrefixe(a);
+    
 
     
 }
