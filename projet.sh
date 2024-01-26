@@ -6,7 +6,7 @@ arg1=$1
 
 for var in $all_arg ; do
 	if [ $var = -h ] ; then
-		echo "Un de vos argument vaut -h, voici le manuel d'aide de la focntion"
+		echo "Un de vos argument vaut -h, voici le manuel d'aide de la fonction"
 	exit 
 	fi
 done
@@ -88,28 +88,41 @@ for var in $all_arg ; do
 		#faire le traitement D1
 	elif [ $var == "-d2" ] ; then
 		echo ""
-		time awk -F';' 'NR > 1 { NAME[$6]+=$5 }END { for(M in NAME)printf("%s;%.3f\n",M,NAME[M]) }' datatruck.csv | sort -t";" -k2 -r -n | head -10 > donnees.dat
+		time awk -F';' 'NR > 1 { NAME[$6]+=$5 }END { for(M in NAME)printf("%s;%.3f\n",M,NAME[M]) }' "$arg1" | sort -t";" -k2 -r -n | head -10 > temp/tempd2.dat
 		gnuplot <<EOF
 		set datafile separator ";"
-		set terminal pngcairo enhanced font 'Verdana,12' 
-		set output 'histogramme.png'
-
-		set style data histograms 
+		set terminal pngcairo enhanced font 'Verdana,8' 
+		set size ratio 1
+		set style data histograms
 		set style histogram rowstacked
-		set style fill solid
+		set style fill solid #fait un graph avec des colonne rempli
 		set boxwidth 0.8
-		set ytics nomirror
-		set xtics rotate by -45
-		set ylabel 'Distances' 
-		set xlabel 'Drivers'
-		plot 'donnees.dat' using 2:xtic(1) title'Distance' lc rgb "blue"
+		set output 'images/temphistogrammed2.png'
+		
+
+		set xtic rotate by 90 
+		set terminal png size 800,800
+		unset ytics
+		unset x2tics
+		set xtics nomirror offset 0,-11
+		set y2tics rotate by 45
+		
+		set y2label 'Distance' offset 2,0
+		set xlabel 'Drivers' offset 0,-11
+		set xlabel rotate by 180
+		set title ' ' offset 0,20
+		set ylabel 'Option -d2' offset -2,0
+		plot 'temp/tempd2.dat' using 2:xtic(1) axes x1y2 notitle lc rgb "red"
+
+		set terminal wxt
 EOF
-#il faut transformer le graphique pour le mettre a l'horizontal
+		convert -rotate 90 images/temphistogrammed2.png images/histogrammed2.png
+		rm images/temphistogrammed2.png
 
 	elif [ $var == "-l" ] ; then
 		echo "Traitement -l en cours"
 		
-		time awk -F";" ' NR>1  { ROUTE[$1]+=$5 } END { for (M in ROUTE) printf "%d;%.3f \n",M,ROUTE[M] }' "$arg1" | sort -k2 -t";" -n -r | head | sort -k1 -t";" -n -r > tempL.dat
+		time awk -F";" ' NR>1  { ROUTE[$1]+=$5 } END { for (M in ROUTE) printf "%d;%.3f \n",M,ROUTE[M] }' "$arg1" | sort -k2 -t";" -n -r | head | sort -k1 -t";" -n -r > temp/tempL.dat
 
 		gnuplot <<EOF
 		set datafile separator ";"
@@ -120,11 +133,11 @@ EOF
 		set style histogram rowstacked
 		set style fill solid
 		set boxwidth 0.8
-
+		set title 'Option -l'
 		set ytics nomirror
 		set ylabel 'Distance' 
 		set xlabel 'Route ID'
-		plot 'tempL.dat' using 2:xtic(1) title'Distance' lc rgb "red"
+		plot 'temp/tempL.dat' using 2:xtic(1) title'Distance' lc rgb "red"
 EOF
 
 
