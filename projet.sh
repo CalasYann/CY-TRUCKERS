@@ -85,7 +85,39 @@ for var in $all_arg ; do
 
 	if [ $var == "-d1" ] ; then 
 		echo ""
-		time awk -F';' 'NR > 1 { !DRIVE[$1";"$6]++ }END {for(a in DRIVE) print a ";" DRIVE[a]}' data.csv | awk -F';' '{ game[$2] += 1}END {for (a in game) printf ("%s;%s\n", a, game[a])}' | sort -n -r -t";" -k2 | head
+		time awk -F';' 'NR > 1 { !DRIVE[$1";"$6]++ }END {for(a in DRIVE) print a ";" DRIVE[a]}' data.csv | awk -F';' '{ game[$2] += 1}END {for (a in game) printf ("%s;%s\n", a, game[a])}' | sort -n -r -t";" -k2 | head -10 > temp/tempd1.dat
+		gnuplot <<EOF
+		set datafile separator ";"
+		set terminal pngcairo enhanced font 'Verdana,8' 
+		set size ratio 1
+		set style data histograms
+		set style histogram rowstacked
+		set style fill solid #fait un graph avec des colonne rempli
+		set boxwidth 0.8
+		set output 'images/temphistogrammed1.png'
+		
+
+		set xtic rotate by 90 
+		set terminal png size 800,800
+		unset ytics
+		unset x2tics
+		set xtics nomirror offset 0,-11
+		set y2tics rotate by 45
+		
+		set y2label 'NB ROUTES' offset 2,0
+		set xlabel 'DRIVER NAMES' offset 0,-11
+		set xlabel rotate by 180
+		set title ' ' offset 0,20
+		set ylabel 'Option -d1' offset -2,0
+		plot 'temp/tempd1.dat' using 2:xtic(1) axes x1y2 notitle lc rgb "red"
+
+		set terminal wxt
+EOF
+		convert -rotate 90 images/temphistogrammed1.png images/histogrammed1.png
+		rm images/temphistogrammed1.png
+
+
+		
 		#faire le traitement D1
 	elif [ $var == "-d2" ] ; then
 		echo ""
