@@ -85,7 +85,7 @@ for var in $all_arg ; do
 
 	if [ $var == "-d1" ] ; then 
 		echo ""
-		time awk -F';' 'NR > 1 { !DRIVE[$1";"$6]++ }END {for(a in DRIVE) print a ";" DRIVE[a]}' data.csv | awk -F';' '{ game[$2] += 1}END {for (a in game) printf ("%s;%s\n", a, game[a])}' | sort -n -r -t";" -k2 | head -10 > temp/tempd1.dat
+		time awk -F';' 'NR > 1 { !DRIVE[$1";"$6]++ }END {for(a in DRIVE) print a ";" DRIVE[a]}' "$arg1" | awk -F';' '{ game[$2] += 1}END {for (a in game) printf ("%s;%s\n", a, game[a])}' | sort -n -r -t";" -k2 | head -10 > temp/tempd1.dat
 		gnuplot <<EOF
 		set datafile separator ";"
 		set terminal pngcairo enhanced font 'Verdana,8' 
