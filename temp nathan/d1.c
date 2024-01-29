@@ -212,7 +212,7 @@ AVL * equilibrageAVL(AVL * a){
 
 int present(int * l, int a){
     int i = 0;
-    while (*(l+i) != NULL){
+    while (l+i != NULL){
         if ( *(l+i) == a){
             return 1;
         }
@@ -239,6 +239,8 @@ AVL * insertionAVL(AVL * a, unsigned int id, int * h, char * nom, int id_t){
     else{
         if (present(a->trajets, id_t) == 0){
             //rajoute l'id du nouveau trajet dans la liste des trajets
+            a->trajets[a->nbr_trajets] = id_t;
+            a->nbr_trajets++;
         }
         *h=0;
         return a;
@@ -367,6 +369,8 @@ int main(){
 
         a = insertionAVL(a, id_from_char(nom), &h, nom, id_trajet);
     }
+
+    printf("===========\n");
 
     parcoursPrefixe(a);
     
