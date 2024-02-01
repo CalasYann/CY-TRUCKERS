@@ -5,7 +5,6 @@
 
 #define MAX 50
 
-char s[MAX];
 char c;
 char dump;
 int e = 1;
@@ -101,7 +100,11 @@ unsigned int id_from_char(char * s){
 }
 
 void afficherVille(Ville * v){
-    
+    if(v== NULL){
+        printf("erreur : afficherVille(NULL)\n");
+        exit(5);
+    }
+    printf("Ville %s\n", v->nom);
 }
 
 Driver * creerDriver(char * Nom){
@@ -145,24 +148,24 @@ Ville * creerVille(char * Nom, int id, char * nomDriver, Ville * v){
 AVLvilles * creerAVL (Ville * v){
     AVLvilles * a = NULL;
     a = malloc(sizeof(AVLvilles));
-    printf("1\n");
+    //printf("1\n");
     if(a==NULL){
         printf("mémoire non allouée pendant de la création du noeud correspondant à la ville suivante\n");
         afficherVille(v);
         exit(3);
     }
-    printf("2\n");
+    //printf("2\n");
     a->fg=NULL;
     a->fd=NULL;
     a->id = id_from_char(v->nom);
     a->equilibre = 0;
     strcpy(a->nom, v->nom);
-    printf("3\n");
+    //printf("3\n");
     a->drivers = v->drivers;
     a->nombreDrivers = v->nombreDrivers;
     a->trajets = v->trajets;
     a->nombreTrajets = v->nombreTrajets;
-    printf("4\n");
+    //printf("4\n");
 
     return a;
 }
@@ -204,6 +207,10 @@ int minf(int a, int b, int c){
 }
 
 AVLvilles * rotationGauche(AVLvilles * a){ //rotation simple à gauche dans un AVL 
+    if(a->fg==NULL){
+        printf("salut la team\n");
+        //exit(7);
+    }
 	AVLvilles * p;
 	int eq_p, eq_a; 
 	p = a->fd; 
@@ -241,10 +248,14 @@ AVLvilles * doubleRotationDroite(AVLvilles * a){
 	return rotationDroite(a); 
 }
 
-AVLvilles * equilibrageAVL(AVLvilles * a){ 
+AVLvilles * equilibrageAVL(AVLvilles * a){
+    if(a==NULL){
+        printf("erreur equilibrageAVL(NULL)\n");
+        exit(6);
+    }
 	if (a->equilibre >= 2){ 
 		if(a->fd->equilibre >= 0){ 
-			return rotationGauche(a); 
+			return rotationGauche(a);
 		}else{ 
 			return doubleRotationGauche(a); 
 		} 
@@ -327,6 +338,14 @@ IDTrajets * insererTrajets(IDTrajets * ListeTrajets, IDTrajets * nouveau_trajet)
 
 AVLvilles * actualisationAVLVilles(AVLvilles * a, int id, char * driver){
     //actualise un noeud de l'AVL Villes en rajoutant l'id du trajet et le nom du driver dans leurs listes chainées respectives
+    if(a==NULL){
+        printf("erreur actualisationVilles(NULL, id, driver)\n");
+        exit(6);
+    }
+    if(driver == NULL){
+        printf("erreur actualisationVilles(a, id, NULL)\n");
+        exit(6);
+    }
     if (rechercheDriver(a->drivers, driver) == 0){
         a->drivers = insererDriver(a->drivers, creerDriver(driver));
         a->nombreDrivers++;
@@ -342,11 +361,11 @@ AVLvilles * actualisationAVLVilles(AVLvilles * a, int id, char * driver){
 
 AVLvilles * insert(AVLvilles * a, Ville * v, int * h, unsigned int id, int idtrajet, char * driver, char * nom){
     if(a==NULL){
-        printf("a==NULL\n");
+        //printf("a==NULL\n");
         *h=1;
-        printf("*h = 1\n");
-        v = creerVille(nom, id, driver, v);
-        printf("v = creerVille() passe\n");
+        //printf("*h = 1\n");
+        //v = creerVille(nom, id, driver, v);
+        //printf("v = creerVille() passe\n");
         return creerAVL(v);
     }
     else if(a->id < id){
@@ -366,7 +385,7 @@ AVLvilles * insert(AVLvilles * a, Ville * v, int * h, unsigned int id, int idtra
     }
     if(*h != 0){
         a->equilibre = a->equilibre + *h;
-        a=equilibrageAVL(a);
+        //a=equilibrageAVL(a);
         if (a->equilibre==0){
             *h=0;
         }
@@ -374,7 +393,7 @@ AVLvilles * insert(AVLvilles * a, Ville * v, int * h, unsigned int id, int idtra
             *h=1;
         }
     }
-    printf("va te faire foutre\n");
+    //printf("va te faire foutre\n");
     return a;
 }
 
@@ -427,15 +446,15 @@ int main(){
 
     AVLvilles * abcdefu;
 
-    for (int w; w<1000000; w++){
+    /*for (int w; w<1000000; w++){
         abcdefu = insert(abcdefu, creerVille("nathan", rand()%100000, "jean-jacques", vtest), h, rand()%100000, rand()%100000, "jean-jacques", "ville de con");
     }
 
     //printf("taille  :%d\n", afficherTailleAVL(abcdefu));
-    printf("==================sah sah sah sah j'en ai marre====================\n");
+    printf("==================sah sah sah sah j'en ai marre====================\n");*/
 
 
-    /*while (id[0]!='R' || ville1[0]!='T' || ville2[0]!='T' || driver[0]!='D'){
+    while (id[0]!='R' || ville1[0]!='T' || ville2[0]!='T' || driver[0]!='D'){
         i++;
         if (i>46000 && i<47000){
             printf("%d\n", i);
@@ -482,7 +501,7 @@ int main(){
         recupVille(ville1, 35);
         recupVille(ville2,35);
         recupDriver(driver, 35);
-    }*/
+    }
 
     //afficherNoeudAVL(AVL);
     
