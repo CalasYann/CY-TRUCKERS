@@ -1,7 +1,7 @@
 #include "AVL.h"
 
 
-AVL* creerarbre(Route e){
+AVL* creerarbre(Route e){ //creer un arbre.
 	AVL* a=NULL;
 	a=malloc(sizeof(AVL));
 	if(a==NULL){
@@ -22,14 +22,14 @@ AVL* creerarbre(Route e){
 }
 
 
-int maxf( int a, int b){
+int maxf( int a, int b){ //max entre 2 valeur.
 	if (a>b){
 		return a;
 	}
 	return b;
 }
 
-int max3(int a, int b, int c){
+int max3(int a, int b, int c){//max entre 3 valeurs.
 	if(a>b){
 		if(a>c){
 			return a;
@@ -44,7 +44,7 @@ int max3(int a, int b, int c){
 }
 
 
-int minf(int a, int b, int c){
+int minf(int a, int b, int c){ min entre 2 valeurs
 	if(a<b){
 		if(a<c){
 			return a;
@@ -82,17 +82,17 @@ AVL * rotationDroite(AVL * a){ // rotation simple à droite dans un AVL
 	return a; 
 } 
 
-AVL * doubleRotationGauche(AVL * a){ 
+AVL * doubleRotationGauche(AVL * a){ // double rotation gauche d'un AVL
 	a->fd = rotationDroite(a->fd); 
 	return rotationGauche(a); 
 } 
 
-AVL * doubleRotationDroite(AVL * a){ 
+AVL * doubleRotationDroite(AVL * a){ //double rotation droite d'un AVL
 	a->fg = rotationGauche(a->fg); 
 	return rotationDroite(a); 
 } 
 
-AVL * equilibrageAVL(AVL * a){ 
+AVL * equilibrageAVL(AVL * a){ //Equilibrage d'un AVL
 	if (a->equilibre >= 2){ 
 		if(a->fd->equilibre >= 0){ 
 			return rotationGauche(a); 
@@ -114,7 +114,7 @@ AVL * equilibrageAVL(AVL * a){
 
 
 	
-AVL* insert(AVL* a, Route e, int* h){
+AVL* insert(AVL* a, Route e, int* h){ //Insertion d'un élement dans un AVL
 	if(a==NULL){
 		*h=1;
 		return creerarbre(e);
@@ -144,7 +144,7 @@ AVL* insert(AVL* a, Route e, int* h){
 }
 
 
-int recherche_et_ajout( AVL* a, Route e){
+int recherche_et_ajout( AVL* a, Route e){ // Ajoute la distance a la bonne route si elle est déjà dans l'AVL
 	if (a==NULL){
 		return 0;
 	}else if (e.id==a->r.id){
@@ -166,7 +166,7 @@ int recherche_et_ajout( AVL* a, Route e){
 }
 
 
-AVL* ajout (AVL* a, Route e,int* h){
+AVL* ajout (AVL* a, Route e,int* h){ //Augmente la route déjà existante ou créer un nouvel arbre si la route n'est pas dans l'AVL
 	int i=recherche_et_ajout(a, e);
 	
 	if (i==0){
@@ -175,7 +175,7 @@ AVL* ajout (AVL* a, Route e,int* h){
 	return a;
 }
 
-Route creerRoute(Route r, int dist, int i){
+Route creerRoute(Route r, int dist, int i){ //Créer une nouvelle route.
 	
 	r.trajet=1;
 	r.id=i;
