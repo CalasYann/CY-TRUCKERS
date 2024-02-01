@@ -1,6 +1,6 @@
 #include "Recup.h"
 
-void recupID(char* c, int t){
+void recupID(char* c, int t){ //Récupère L'ID de la route passée en entrée standard
 	
 	int i=0;
 	int j=0;
@@ -17,7 +17,7 @@ void recupID(char* c, int t){
 }
 
 
-void recupDist(char* c, int t){
+void recupDist(char* c, int t){ //Récupère la distance du trajet passée en entrée standard.
 	int i=0;
 	int j=0;
 	do{
