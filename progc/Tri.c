@@ -1,7 +1,7 @@
 #include "Tri.h"
 
 
-void TriSelection(Route* T, int n){
+void TriSelection(Route* T, int n){ //Tri le tableau dans l'ordre décroissant.
 	int noEtape,noCase,indiceMin;
 	Route temp;
 	
@@ -20,7 +20,7 @@ void TriSelection(Route* T, int n){
 	}
 }
 
-void max50(AVL* a, Route* R){
+void max50(AVL* a, Route* R){ //rentre dans les 50 routes dont la différence entre le plus grand trajet et le plus petit est la plus grande.
 	a->r.diff=a->r.max-a->r.min;
 	a->r.moyenne=(a->r.somme/a->r.trajet)/1000;
 	if(R[0].diff<=a->r.diff){
@@ -33,7 +33,7 @@ void max50(AVL* a, Route* R){
 
 
 
-void parcoursInfixe( AVL* a, Route* R){
+void parcoursInfixe( AVL* a, Route* R){//Parcours l'arbre en vérifiant si chaque élément fait parti du top 50
 	if(a!=NULL){
 		parcoursInfixe(a->fg,R);
 		max50(a,R);
