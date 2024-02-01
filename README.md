@@ -11,4 +11,4 @@ Merci d'avoir choisi CY-TRUCKERS pour votre programme, voici quelques lignes à 
 
  Enfin si vous rencontrait le moindre problème n'hésitez pas à nous contacter nous serons heureux de vous répondre et de vous guider.
 
-  #Profitez bien de notre programme.
+Profitez bien de notre programme.
