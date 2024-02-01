@@ -5,7 +5,7 @@ all_arg=$*
 arg1=$1
 
 for var in $all_arg ; do
-	if [ $var = -h ] ; then
+	if [ $var = -h ] ; then #Affiche le manuel de la fonction
 		echo "Un de vos argument vaut -h, voici le manuel d'aide de la commande : 
 Cette commande est associé a plusieur option, pour l'utilisé correctement il faut mettre en premier argument votre fichier à traiter comme indiqué dans le ReadMe associé.
 Les différentes options :
@@ -17,16 +17,16 @@ Les différentes options :
 	exit 
 	fi
 done
-term=`echo $arg1 | sed 's/.*\.//g' `
+term=`echo $arg1 | sed 's/.*\.//g' ` #récupère l'extension du fichier passé en paramètre.
 
 
-if [ $nb_arg -lt 2 ] ; then
+if [ $nb_arg -lt 2 ] ; then #Vérifie le nombre d'argument passé en paramètre
 	echo "Nombre d'argument trop faible"
 	exit
-elif [ ! -f $arg1 ] ; then
+elif [ ! -f $arg1 ] ; then #Vérifie que le premier paramètre est un fichier
 	echo "Votre premier argument n'est pas un fichier"
 	exit
-elif [ "$term" != csv ] ; then
+elif [ "$term" != csv ] ; then #Vérifie que l'extension du fichier est bien un csv
 
 	echo "Votre fichier n'est pas un fichier .csv"
 	exit
@@ -40,7 +40,7 @@ exec=0
 
 
 for var in $dosc/* ; do #prend le contenu du dossier
-	if [ -x $var ] ; then 
+	if [ -x $var ] ; then #Vérifie si l'executable existe déjà
 	echo "L'executable existe déjà"
 	exec=$var;
 	fi
@@ -48,7 +48,7 @@ done
 
 if [ $exec == "0" ] ; then 
 	for var in $dosc/* ; do #prend le contenu du dossier
-		if [ `echo $var | sed 's/.*\.//g' ` == c ] ; then 
+		if [ `echo $var | sed 's/.*\.//g' ` == c ] ; then #Compile le fichier c
 		
 		cd progc/
 		exec=`make`
@@ -63,17 +63,17 @@ fi
 
 ttemp=0 
 for var in $doss/* ; do 
-	if [ `echo $var | sed 's/.*\///g' ` == temp ] ; then 
+	if [ `echo $var | sed 's/.*\///g' ` == temp ] ; then #Vide le dossier temp si il existe.
 		`rm -r -f temp/*`
 		ttemp=1
 	fi
 done
 
-if [ $ttemp == "0" ] ; then 
+if [ $ttemp == "0" ] ; then #Crée le dossier temp s'il n'existe pas
 	`mkdir temp`
 fi
 
-if [ ! -e images/ ] ; then 
+if [ ! -e images/ ] ; then #Crée le dossier images s'il n'existe pas
 	`mkdir images`
 fi
 
@@ -81,9 +81,9 @@ count=1
 
 for var in $all_arg ; do
 
-	if [ $var == "-d1" ] ; then 
+	if [ $var == "-d1" ] ; then #fait le traitement d1 si il y a le bonne argument.
 		echo "Traitement -d1"
-		time awk -F';' 'NR > 1 { !DRIVE[$1";"$6]++ }END {for(a in DRIVE) print a ";" DRIVE[a]}' "$arg1" | awk -F';' '{ game[$2] += 1}END {for (a in game) printf ("%s;%s\n", a, game[a])}' | sort -n -r -t";" -k2 | head -10 > temp/tempd1.dat
+		time awk -F';' 'NR > 1 { !DRIVE[$1";"$6]++ }END {for(a in DRIVE) print a ";" DRIVE[a]}' "$arg1" | awk -F';' '{ game[$2] += 1}END {for (a in game) printf ("%s;%s\n", a, game[a])}' | sort -n -r -t";" -k2 | head -10 > temp/tempd1.dat #récupère les valeurs utiles et les place dans un fichier. 
 		gnuplot <<EOF
 		set datafile separator ";"
 		set terminal pngcairo enhanced font 'Verdana,8' 
@@ -111,12 +111,14 @@ for var in $all_arg ; do
 
 		set terminal wxt
 EOF
-		convert -rotate 90 images/temphistogrammed1.png images/histogrammed1.png
+#crée le graphique
+		convert -rotate 90 images/temphistogrammed1.png images/histogrammed1.png #le tourne dans le bon sens
 		rm images/temphistogrammed1.png
+
 		
-	elif [ $var == "-d2" ] ; then
+	elif [ $var == "-d2" ] ; then #fait le traitement d2 si il y a le bonne argument.
 		echo "Traitement -d2"
-		time awk -F';' 'NR > 1 { NAME[$6]+=$5 }END { for(M in NAME)printf("%s;%.3f\n",M,NAME[M]) }' "$arg1" | sort -t";" -k2 -r -n | head -10 > temp/tempd2.dat
+		time awk -F';' 'NR > 1 { NAME[$6]+=$5 }END { for(M in NAME)printf("%s;%.3f\n",M,NAME[M]) }' "$arg1" | sort -t";" -k2 -r -n | head -10 > temp/tempd2.dat #récupère les valeurs utiles et les place dans un fichier.
 		gnuplot <<EOF
 		set datafile separator ";"
 		set terminal pngcairo enhanced font 'Verdana,8' 
@@ -144,13 +146,14 @@ EOF
 
 		set terminal wxt
 EOF
+#crée le graphique
 		convert -rotate 90 images/temphistogrammed2.png images/histogrammed2.png
 		rm images/temphistogrammed2.png
 
-	elif [ $var == "-l" ] ; then
+	elif [ $var == "-l" ] ; then #fait le traitement l si il y a le bonne argument.
 		echo "Traitement -l en cours"
 		
-		time awk -F';' 'NR > 1 { NAME[$1]+=$5 }END { for(M in NAME)printf("%s;%.3f\n",M,NAME[M]) }' "$arg1" | sort -t";" -k2 -r -n | head -10 > temp/templ.dat
+		time awk -F';' 'NR > 1 { NAME[$1]+=$5 }END { for(M in NAME)printf("%s;%.3f\n",M,NAME[M]) }' "$arg1" | sort -t";" -k2 -r -n | head -10 > temp/templ.dat #récupère les valeurs utiles et les place dans un fichier.
 
 		gnuplot <<EOF
 		set datafile separator ";"
@@ -167,14 +170,14 @@ EOF
 		set xlabel 'Route ID'
 		plot 'temp/templ.dat' using 2:xtic(1) title'Distance' lc rgb "red"
 EOF
+#crée le graphique
 
-
-	elif [ $var == "-t" ] ; then 
+	elif [ $var == "-t" ] ; then #fait le traitement t si il y a le bonne argument. 
 		echo ""	
 		#faire le traitement T
-	elif [ $var == "-s" ] ; then
+	elif [ $var == "-s" ] ; then #fait le traitement s si il y a le bonne argument.
 		echo "Traitement -s" 
-		time  tac "$arg1" | cut -d";" -f1,5 | ./progc/exec 1
+		time  tac "$arg1" | cut -d";" -f1,5 | ./progc/exec 1 #appelle le programme c pour réaliser le traitement S et mettre dans un fichier les résultats.
 
 
 		gnuplot <<EOF
@@ -202,6 +205,7 @@ EOF
 	
 
 EOF
+#crée le graphique
 	elif [ $count == "1" ] ; then
 		echo " "
 	else 
@@ -211,4 +215,7 @@ EOF
 	
 done
 
+cd progc
+a=`make clean`
+cd ..
 
