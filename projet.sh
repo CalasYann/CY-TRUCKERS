@@ -215,4 +215,7 @@ EOF
 	
 done
 
+cd progc
+a=`make clean`
+cd ..
 
