@@ -14,13 +14,16 @@ int mega_i = 0;
 typedef struct IDTrajets{
     //structure pour file dynamique de trajets
     int id;
-    struct IDTrajets * next;
+    struct IDTrajets * fg;
+    struct IDTrajets * fd;
 }IDTrajets;
 
 typedef struct Driver{
     //structure pour file dynamique de conducteurs
-    char nom[35]; //le nom de conducteur le plus long fait 32 caractères
-    struct Driver * next;
+    char nom[35];
+    unsigned int id;
+    struct Driver * fg;
+    struct Driver * fd;
 }Driver;
 
 typedef struct Ville{
@@ -91,7 +94,7 @@ unsigned int id_from_char(char * s){
     //créée un int unique à partir d'une chaine de caractères (pour faire un AVL)
     unsigned int id = 0;
     int i = 0;
-    while (*(s+i) != '\0' && i<30){
+    while (*(s+i) != '\0' && i<35){
         id = id*27 + *(s+i); 
         i++;
     }
@@ -115,7 +118,9 @@ Driver * creerDriver(char * Nom){
         exit(1);
     }
     strcpy(d->nom, Nom);
-    d->next = NULL;
+    d->id = id_from_char(d->nom);
+    d->fg = NULL;
+    d->fd = NULL;
 
     return d;
 }
@@ -127,7 +132,8 @@ IDTrajets * creerIdTrajets(int Id){
         exit(1);
     }
     id->id = Id;
-    id->next = NULL;
+    id->fg = NULL;
+    id->fd = NULL;
 
     return id;
 }
@@ -263,16 +269,16 @@ AVLvilles * equilibrageAVL(AVLvilles * a){
 	if (a->equilibre <= -2){ 
 		if(a->fg->equilibre <= 0){ 
 			return rotationDroite(a); 
-	}else{ 
+	    }else{ 
 			return doubleRotationDroite(a); 
-			} 
+		} 
 	} 
 	
 	return a; 
 	
 }
 
-Driver * insererDriver(Driver * d, Driver * a){
+/*Driver * insererDriver(Driver * d, Driver * a){
     if(d == NULL){
         return a;
     }
@@ -288,9 +294,23 @@ Driver * insererDriver(Driver * d, Driver * a){
     i->next = a;
 
     return d;
+}*/
+
+Driver * insererDriver(Driver * d, Driver * a){
+    if (d == NULL){
+        return a;
+    }
+    if (a->id < d->id){
+        d->fg = insererDriver(d->fg, a);
+    }
+    else if (a->id > d->id){
+        d->fd = insererDriver(d->fd, a);
+    }
+    return d;
+    
 }
 
-int rechercheDriver(Driver * d, char * nom){
+/*int rechercheDriver(Driver * d, char * nom){
     //vérifie si le nom du conducteur passé en argument est présent, renvoie 1 alors et 0 sinon
     if(d==NULL){
         printf("erreur rechercheDriver() : Driver non alloué\n");
@@ -307,9 +327,26 @@ int rechercheDriver(Driver * d, char * nom){
         }
     }
     return 0; 
+}*/
+
+int rechercheDriver(Driver * d, int id){
+    if (d==NULL){
+        return 0;
+    }
+    else if (d->id == id){
+        return 1;
+    }
+    if(id < d->id){
+        return rechercheDriver(d->fg, id);
+    }
+    else {
+        return rechercheDriver(d->fd, id);
+    }
+    
+    
 }
 
-int rechercheID(IDTrajets * ListeTrajets, int id){
+/*int rechercheID(IDTrajets * ListeTrajets, int id){
     if (ListeTrajets == NULL){
         printf("erreur rechercheID() : ListeTrajets non allouée\n");
         return 0;
@@ -325,9 +362,24 @@ int rechercheID(IDTrajets * ListeTrajets, int id){
         }
     }
     return 0;
+}*/
+
+int rechercheID(IDTrajets * ArbreTrajets, int id){
+    if (ArbreTrajets == NULL){
+        return 0;
+    }
+    else if (ArbreTrajets->id == id){
+        return 1;
+    }
+    else if (id < ArbreTrajets->id){
+        return rechercheID(ArbreTrajets->fg, id);
+    }
+    else{
+        return rechercheID(ArbreTrajets->fd, id);
+    }
 }
 
-IDTrajets * insererTrajets(IDTrajets * ListeTrajets, IDTrajets * nouveau_trajet){
+/*IDTrajets * insererTrajets(IDTrajets * ListeTrajets, IDTrajets * nouveau_trajet){
     IDTrajets * a = ListeTrajets;
     while (a->next != NULL){
         a = a->next;
@@ -335,24 +387,37 @@ IDTrajets * insererTrajets(IDTrajets * ListeTrajets, IDTrajets * nouveau_trajet)
     a->next = nouveau_trajet;
 
     return ListeTrajets;
+}*/
+
+IDTrajets * insererTrajets(IDTrajets * ArbreTrajets, IDTrajets * nouveau_trajet){
+    if (ArbreTrajets == NULL){
+        return nouveau_trajet;
+    }
+    else if (nouveau_trajet->id < ArbreTrajets->id){
+        return insererTrajets(ArbreTrajets->fg, nouveau_trajet);
+    }
+    else if (nouveau_trajet->id > ArbreTrajets->id){
+        return insererTrajets(ArbreTrajets->fd, nouveau_trajet);
+    }
+    return ArbreTrajets;
 }
 
 AVLvilles * actualisationAVLVilles(AVLvilles * a, int id, char * driver){
     //actualise un noeud de l'AVL Villes en rajoutant l'id du trajet et le nom du driver dans leurs listes chainées respectives
-    if(a==NULL){
+    /*if(a==NULL){
         printf("erreur actualisationVilles(NULL, id, driver)\n");
         exit(6);
     }
     if(driver == NULL){
         printf("erreur actualisationVilles(a, id, NULL)\n");
         exit(6);
-    }
-    if (rechercheDriver(a->drivers, driver) == 0){
+    }*/
+    if (rechercheDriver(a->drivers, id_from_char(driver)) == 1){
         a->drivers = insererDriver(a->drivers, creerDriver(driver));
         a->nombreDrivers++;
     }
 
-    if (rechercheID(a->trajets, id) == 0){
+    if (rechercheID(a->trajets, id) == 1){
         a->trajets = insererTrajets(a->trajets, creerIdTrajets(id));
         a->nombreTrajets++;
     }
@@ -500,6 +565,7 @@ int main(){
     }
 
     afficherNoeudAVL(AVL);
+    printf("%d\n", AVL->trajets->id);
     
     printf("done\n");
 
