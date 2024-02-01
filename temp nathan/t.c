@@ -208,7 +208,7 @@ int minf(int a, int b, int c){
 
 AVLvilles * rotationGauche(AVLvilles * a){ //rotation simple à gauche dans un AVL 
     if(a->fg==NULL){
-        printf("salut la team\n");
+        //printf("salut la team\n");
         //exit(7);
     }
 	AVLvilles * p;
@@ -258,15 +258,16 @@ AVLvilles * equilibrageAVL(AVLvilles * a){
 			return rotationGauche(a);
 		}else{ 
 			return doubleRotationGauche(a); 
-		} 
-		if (a->equilibre <= -2){ 
-			if(a->fg->equilibre <= 0){ 
-				return rotationDroite(a); 
-			}else{ 
-				return doubleRotationDroite(a); 
+		}
+    } 
+	if (a->equilibre <= -2){ 
+		if(a->fg->equilibre <= 0){ 
+			return rotationDroite(a); 
+	}else{ 
+			return doubleRotationDroite(a); 
 			} 
-		} 
-	}
+	} 
+	
 	return a; 
 	
 }
@@ -298,7 +299,7 @@ int rechercheDriver(Driver * d, char * nom){
     Driver * a;
     a = d;
     while (a->next != NULL){
-        if (strncmp(a->nom, nom, maxf(strlen(a->nom), strlen(nom)))){
+        if (strncmp(a->nom, nom, maxf(strlen(a->nom), strlen(nom))) == 0){
             return 1;
         }
         else{
@@ -368,12 +369,12 @@ AVLvilles * insert(AVLvilles * a, Ville * v, int * h, unsigned int id, int idtra
         //printf("v = creerVille() passe\n");
         return creerAVL(v);
     }
-    else if(a->id < id){
+    else if(a->id > id){
         //printf("a->id < id\n");
         a->fg=insert(a->fg, v, h, id, idtrajet, driver, nom);
         *h=-(*h);
     }
-    else if(a->id > id){
+    else if(a->id < id){
         //printf("a->id > id\n");
         a->fd=insert(a->fd, v, h, id, idtrajet, driver, nom);
     }
@@ -385,7 +386,7 @@ AVLvilles * insert(AVLvilles * a, Ville * v, int * h, unsigned int id, int idtra
     }
     if(*h != 0){
         a->equilibre = a->equilibre + *h;
-        //a=equilibrageAVL(a);
+        a=equilibrageAVL(a);
         if (a->equilibre==0){
             *h=0;
         }
@@ -398,7 +399,7 @@ AVLvilles * insert(AVLvilles * a, Ville * v, int * h, unsigned int id, int idtra
 }
 
 void afficherNoeudAVL(AVLvilles * a){
-    printf("id : %d\n", a->id);
+    printf("id : %u\n", a->id);
     printf("nom : %s\n",a->nom);
     printf("nombre trajets : %d\n", a->nombreTrajets);
     printf("nombre drivers : %d\n", a->nombreDrivers);
@@ -432,7 +433,7 @@ int main(){
 
     int i = 0;
 
-    int  * h = malloc(sizeof(int));
+    int * h = malloc(sizeof(int));
 
     recupID(id, 10);
     recupVille(ville1, 35);
@@ -465,18 +466,13 @@ int main(){
             printf("taille AVL : %d\n", afficherTailleAVL(AVL));
         }
 
-        //check si driver est vide
-        if(strlen(driver) == 0){
-            printf("DRIVER VIDE, ligne %d\n", i);
-            exit(3);
-        }
         
         ID = atoi(id);
 
         v = creerVille(ville1, ID, driver, v);
         if (i>46000 && i<47000){
             printf("v1 = creerVille() passe\n");
-            printf("ID = %d\n", id);
+            printf("ID = %d\n", ID);
             printf("nom : %s\n", ville1);
             printf("driver : %s\n", driver);
         }
@@ -503,7 +499,7 @@ int main(){
         recupDriver(driver, 35);
     }
 
-    //afficherNoeudAVL(AVL);
+    afficherNoeudAVL(AVL);
     
     printf("done\n");
 
