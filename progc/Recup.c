@@ -1,6 +1,6 @@
 #include "Recup.h"
 
-void recupID(char* c, int t){ //Récupère L'ID de la route passée en entrée standard
+void recupID(char* c, int t){
 	
 	int i=0;
 	int j=0;
@@ -17,7 +17,7 @@ void recupID(char* c, int t){ //Récupère L'ID de la route passée en entrée s
 }
 
 
-void recupDist(char* c, int t){ //Récupère la distance du trajet passée en entrée standard.
+void recupDist(char* c, int t){
 	int i=0;
 	int j=0;
 	do{
@@ -31,4 +31,52 @@ void recupDist(char* c, int t){ //Récupère la distance du trajet passée en en
 	}while(j==0 && i<t);
 	
 	
+}
+
+
+
+void recupVille(char * c, int t){
+    int i = 0;
+    int etat = 0;
+    do{
+        scanf("%c", &c[i]);
+        if(c[i] == ';'){
+            c[i] = '\0';
+
+            etat = 1;
+        }
+        i++;
+    }while(etat == 0 && i<t);
+}
+
+
+void recupEtape(char* c, int t){
+	
+	int i=0;
+	int etat=0;
+	do{
+		scanf("%c",&c[i]);
+
+		if(c[i]==';'){
+			c[i]='\0';
+			
+			etat=1;
+		}
+		i++;
+	}while(etat == 0 && i<t);
+}
+
+
+void recupDriver(char * c, int t){
+    int i = 0;
+    int etat = 0;
+    do{
+        scanf("%c", &c[i]);
+        if((c[i] == '\n' || c[i] == '\0')){
+            c[i] = '\0';
+
+            etat = 1;
+        }
+        i++;
+    }while (etat == 0 && i<t);
 }
