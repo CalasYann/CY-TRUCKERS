@@ -44,7 +44,7 @@ int max3(int a, int b, int c){//max entre 3 valeurs.
 }
 
 
-int minf(int a, int b, int c){ min entre 2 valeurs
+int minf(int a, int b, int c){ //min entre 2 valeurs
 	if(a<b){
 		if(a<c){
 			return a;
