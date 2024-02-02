@@ -374,7 +374,7 @@ int rechercheID(IDTrajets * ArbreTrajets, int id){
     else if (id < ArbreTrajets->id){
         return rechercheID(ArbreTrajets->fg, id);
     }
-    else{
+    else if (id > ArbreTrajets->id){
         return rechercheID(ArbreTrajets->fd, id);
     }
 }
@@ -394,10 +394,10 @@ IDTrajets * insererTrajets(IDTrajets * ArbreTrajets, IDTrajets * nouveau_trajet)
         return nouveau_trajet;
     }
     else if (nouveau_trajet->id < ArbreTrajets->id){
-        return insererTrajets(ArbreTrajets->fg, nouveau_trajet);
+        ArbreTrajets->fg = insererTrajets(ArbreTrajets->fg, nouveau_trajet);
     }
     else if (nouveau_trajet->id > ArbreTrajets->id){
-        return insererTrajets(ArbreTrajets->fd, nouveau_trajet);
+        ArbreTrajets->fd = insererTrajets(ArbreTrajets->fd, nouveau_trajet);
     }
     return ArbreTrajets;
 }
@@ -412,12 +412,12 @@ AVLvilles * actualisationAVLVilles(AVLvilles * a, int id, char * driver){
         printf("erreur actualisationVilles(a, id, NULL)\n");
         exit(6);
     }*/
-    if (rechercheDriver(a->drivers, id_from_char(driver)) == 1){
+    if (rechercheDriver(a->drivers, id_from_char(driver)) == 0){
         a->drivers = insererDriver(a->drivers, creerDriver(driver));
         a->nombreDrivers++;
     }
 
-    if (rechercheID(a->trajets, id) == 1){
+    if (rechercheID(a->trajets, id) == 0){
         a->trajets = insererTrajets(a->trajets, creerIdTrajets(id));
         a->nombreTrajets++;
     }
@@ -479,6 +479,47 @@ int afficherTailleAVL(AVLvilles * a){
     }
 }
 
+
+
+void triSelection(AVLvilles * t[], int n){
+    int i, j, index_min;
+    AVLvilles * temp;
+
+    for (i = 0; i<n-1; i++){
+        index_min = i;
+        for (j = i+1; j<n; j++){
+            if(t[j]->nombreTrajets < t[index_min]->nombreTrajets){
+                index_min = j;
+            }
+            if(index_min != i){
+                temp = t[index_min];
+                t[index_min] = t[i];
+                t[i] = temp;
+            }   
+        }
+    }
+
+}
+
+void remplirTableau(AVLvilles * * tab, AVLvilles * a, int taille){
+    if (a != NULL){
+        if (a->nombreTrajets > tab[0]->nombreTrajets){
+            tab[0] = a;
+            triSelection(tab, taille);
+        }
+        remplirTableau(tab, a->fg, taille);
+        remplirTableau(tab, a->fd, taille);
+    }
+}
+
+void afficherPremiers(AVLvilles * a, int i){
+        if (i<100){
+            afficherNoeudAVL(a);
+            afficherPremiers(a->fg, i++);
+            afficherPremiers(a->fd, i+=2);
+        }
+    }
+
 int main(){
     srand(time(NULL));
     char id[30];
@@ -492,6 +533,8 @@ int main(){
     Ville * v2 = malloc(sizeof(Ville));
     Ville * ListeVilles = malloc(10*sizeof(Ville)); //liste des 10 villes les plus traversées
     Ville * vtest;
+
+    AVLvilles ** tab = malloc(10*sizeof(AVLvilles *));
     
 
     AVLvilles * AVL = NULL;
@@ -566,6 +609,18 @@ int main(){
 
     afficherNoeudAVL(AVL);
     printf("%d\n", AVL->trajets->id);
+
+    printf("====================\n");
+
+    /*remplirTableau(tab, AVL, 10);
+
+    for (int idx = 0; idx<10; idx++){
+        printf("Ville : %s\n", tab[idx]->nom);
+        printf("%d\n", tab[idx]->nombreTrajets);
+    }*/
+
+    
+    afficherPremiers(AVL, 0);
     
     printf("done\n");
 
