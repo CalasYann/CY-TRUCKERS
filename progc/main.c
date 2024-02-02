@@ -6,7 +6,7 @@
 
 int main(){
 	AVL* a=NULL;
-
+//Déclaration de toutes les variables utiles pour le main
 	char id[30];
 	char dist[30];
 	recupID(id,30);
@@ -19,9 +19,9 @@ int main(){
 	int i=0;	
 	Route *R=malloc(50*sizeof(Route));
 	for(int i=0;i<50;i++){
-		R[i].diff=0;
+		R[i].diff=0;//création du tableau top50 avec uniquement des 0.
 	}
-	
+	//boucle pour récupérer toutes les lignes du fichiers et les placer dans un AVL trié en fonction des ID des routes.
 	while (id[0]!='R' && dist[0]!='D'){
 		i+=1;
 		
@@ -39,10 +39,10 @@ int main(){
 		
 	}
 	
-	parcoursInfixe(a,R);
+	parcoursInfixe(a,R); //Récupère les 50 trajets 
 	
 	FILE *f;
-	f=fopen("temp/temps.dat","w");
+	f=fopen("temp/temps.dat","w");Créer un fichier pour stocker les valeurs
 	
 	if(f==NULL){
 		printf("Erreur dans la création du fichier\n");
@@ -51,7 +51,7 @@ int main(){
 	for(int i=0; i<50; i++){
 		R[49-i].max=R[49-i].max/1000;
 		R[49-i].min=R[49-i].min/1000;
-		fprintf(f, "%d; %d; %d; %d \n",R[49-i].id,R[49-i].min,R[49-i].moyenne,R[49-i].max);
+		fprintf(f, "%d; %d; %d; %d \n",R[49-i].id,R[49-i].min,R[49-i].moyenne,R[49-i].max);//place les valeurs dans le fichier.
 	}
 	
 	fclose(f);
