@@ -43,7 +43,7 @@ int main(int argc, char* argv[]){
 		parcoursInfixe(a,R); //Récupère les 50 trajets 
 		
 		FILE *f;
-		f=fopen("temp/temps.dat","w");Créer un fichier pour stocker les valeurs
+		f=fopen("temp/temps.dat","w"); //Créer un fichier pour stocker les valeurs
 		
 		if(f==NULL){
 			printf("Erreur dans la création du fichier\n");
