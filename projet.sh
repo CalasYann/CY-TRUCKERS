@@ -183,8 +183,8 @@ EOF
 		set boxwidth 1.5
 
 		set ytics nomirror
-		set ylabel 'Distance' 
-		set xlabel 'Route ID'
+		set ylabel 'Nombre d'apparition' 
+		set xlabel 'Ville'
 		plot 'temp/tempt.dat' using 2:xtic(1) title'Total' lc rgb "red",\
 		'temp/tempt.dat' using 3:xtic(1) title'Départ' lc rgb "blue" 
 EOF
