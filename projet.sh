@@ -173,7 +173,25 @@ EOF
 #crée le graphique
 
 	elif [ $var == "-t" ] ; then #fait le traitement t si il y a le bonne argument. 
-		echo ""	
+		echo "Traitement -t"	
+  		gnuplot <<EOF
+		set datafile separator ";"
+		set terminal pngcairo enhanced font 'Verdana,8' 
+		set output 'histogrammet.png'
+		
+		set style data histograms 
+		set style histogram clustered
+		set style fill solid
+		set boxwidth 1.5
+		
+		set ytics nomirror
+		set ylabel 'Distance' 
+		set xlabel 'Route ID'
+		plot 'tempt.dat' using 2:xtic(1) title'Total' lc rgb "red",\
+		'tempt.dat' using 3:xtic(1) title'Départ' lc rgb "blue" 
+EOF
+	
+
 		#faire le traitement T
 	elif [ $var == "-s" ] ; then #fait le traitement s si il y a le bonne argument.
 		echo "Traitement -s" 
