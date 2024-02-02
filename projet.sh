@@ -63,7 +63,7 @@ fi
 
 ttemp=0 
 for var in $doss/* ; do 
-	if [ `echo $var | sed 's/.*\///g' ` == temp ] ; then #Vide le dossier temp si il existe.
+	if [ "$var" == "$doss/temp" ] ; then #Vide le dossier temp si il existe.
 		`rm -r -f temp/*`
 		ttemp=1
 	fi
