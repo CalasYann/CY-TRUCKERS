@@ -181,6 +181,7 @@ EOF
 		set style histogram clustered
 		set style fill solid
 		set boxwidth 1.5
+  		set xtics rotate by -45
 
 		set ytics nomirror
 		set ylabel 'Nombre d'apparition' 
